@@ -30,6 +30,12 @@ if (!is_array($event) || ($event['event'] ?? null) !== 'crypto_payment.matched' 
     die('Ignored');
 }
 
+// See adeptix.php's callback for why test_mode is checked here too.
+if (!empty($event['test_mode'])) {
+    http_response_code(200);
+    die('Ignored (test mode)');
+}
+
 $invoiceId = checkCbInvoiceID($event['order_ref'], $gatewayParams['name']);
 checkCbTransID($event['tx_hash']);
 

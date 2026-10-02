@@ -30,6 +30,15 @@ if (!is_array($event) || ($event['event'] ?? null) !== 'payment.paid' || !isset(
     die('Ignored');
 }
 
+// A live WHMCS install has no notion of "test mode" of its own - a webhook carrying test_mode is
+// never meant for it. Skipping it here (rather than trusting the event name alone) is what stops
+// a sandbox API key's test payment from crediting a real invoice if its order_ref happened to
+// match one, since both rails deliver to this same URL regardless of mode.
+if (!empty($event['test_mode'])) {
+    http_response_code(200);
+    die('Ignored (test mode)');
+}
+
 $invoiceId = checkCbInvoiceID($event['order_ref'], $gatewayParams['name']);
 checkCbTransID($event['transaction_id']);
 
