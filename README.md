@@ -60,3 +60,7 @@ staging WHMCS install before using this in production.
 ## License
 
 MIT
+
+## Test mode
+
+Webhooks triggered by an `ak_test_` API key carry `"test_mode": true`. This plugin ignores those events on purpose, so a store configured with a test key will not have orders marked paid by webhook. Use a live (`ak_live_`) key for real orders.
